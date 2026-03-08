@@ -17,28 +17,7 @@
 
 ---
 
-## 🗂️ Repository Structure
 
-```
-demand-forecast/
-├── data/
-│   ├── raw/                    # Original M5 files (not committed)
-│   ├── processed/              # Cleaned, merged datasets
-│   └── external/               # Calendar, prices
-├── src/
-│   ├── data/                   # Ingestion & preprocessing
-│   ├── features/               # Feature engineering
-│   ├── models/                 # Classical, ML, DL model wrappers
-│   ├── evaluation/             # Metrics: WRMSSE, MASE, coverage
-│   └── api/                    # FastAPI serving layer
-├── dashboard/                  # Streamlit app
-├── notebooks/                  # EDA, experiments
-├── configs/                    # YAML configs per model
-├── tests/                      # Unit tests
-└── scripts/                    # Train, evaluate, serve entrypoints
-```
-
----
 
 ## 🧱 Model Pipeline
 
