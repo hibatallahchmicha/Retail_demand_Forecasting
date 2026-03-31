@@ -1,6 +1,4 @@
 """
-src/data/preprocessing.py
-─────────────────────────
 Loads and preprocesses M5 Walmart dataset into a clean long-format DataFrame.
 
 Steps:
@@ -23,7 +21,7 @@ import pandas as pd
 from loguru import logger
 
 
-# ── Paths ─────────────────────────────────────────────────────────────────────
+# Paths
 RAW_DIR = Path("data/raw")
 PROCESSED_DIR = Path("data/processed")
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
@@ -35,7 +33,7 @@ PRICES_FILE   = RAW_DIR / "sell_prices.csv"
 SUBMISSION_FILE = RAW_DIR / "sample_submission.csv"     # defines forecast ids
 
 
-# ── Main entry point ──────────────────────────────────────────────────────────
+# Main entry point 
 def run_preprocessing(
     sales_path: Path = SALES_FILE,
     calendar_path: Path = CALENDAR_FILE,
@@ -46,8 +44,7 @@ def run_preprocessing(
     """
     Full preprocessing pipeline. Returns clean long-format DataFrame.
 
-    Parameters
-    ----------
+    Parameters :
     sales_path, calendar_path, prices_path : Path
         Paths to raw M5 CSV files.
     output_path : Path
@@ -55,8 +52,8 @@ def run_preprocessing(
     sample_stores : list[str] | None
         Subset of store_ids to keep (useful during development).
 
-    Returns
-    -------
+    Returns :
+    
     pd.DataFrame with columns:
         id, item_id, dept_id, cat_id, store_id, state_id,
         date, d, sales, wm_yr_wk,
@@ -65,34 +62,34 @@ def run_preprocessing(
         sell_price,
         is_stockout (bool)
     """
-    logger.info("▶ Loading raw M5 files …")
+    logger.info(" Loading raw M5 files …")
     sales_df    = _load_sales(sales_path, sample_stores)
     calendar_df = _load_calendar(calendar_path)
     prices_df   = _load_prices(prices_path)
 
-    logger.info("▶ Melting sales to long format …")
+    logger.info(" Melting sales to long format …")
     long_df = _melt_sales(sales_df)
 
-    logger.info("▶ Merging calendar …")
+    logger.info(" Merging calendar …")
     long_df = _merge_calendar(long_df, calendar_df)
 
-    logger.info("▶ Merging sell prices …")
+    logger.info(" Merging sell prices …")
     long_df = _merge_prices(long_df, prices_df)
 
-    logger.info("▶ Detecting stockouts …")
+    logger.info(" Detecting stockouts …")
     long_df = _detect_stockouts(long_df)
 
-    logger.info("▶ Parsing hierarchy …")
+    logger.info(" Parsing hierarchy …")
     long_df = _parse_hierarchy(long_df)
 
-    logger.info(f"▶ Writing parquet → {output_path}")
+    logger.info(f" Writing parquet → {output_path}")
     long_df.to_parquet(output_path, index=False)
 
-    logger.success(f"✔ Preprocessing complete. Shape: {long_df.shape}")
+    logger.success(f"Preprocessing complete. Shape: {long_df.shape}")
     return long_df
 
 
-# ── Sub-steps ─────────────────────────────────────────────────────────────────
+#  Sub-steps 
 
 def _load_sales(path: Path, sample_stores: list[str] | None) -> pd.DataFrame:
     df = pd.read_csv(path)
@@ -194,7 +191,7 @@ def _parse_hierarchy(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# ── CLI ───────────────────────────────────────────────────────────────────────
+# CLI 
 if __name__ == "__main__":
     import argparse
 
