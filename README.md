@@ -97,15 +97,14 @@ streamlit run dashboard/app.py
 
 ## 🗺️ Roadmap
 
+## 🗺️ Roadmap
 - [x] Repo structure & data pipeline
-- [ ] EDA notebook
-- [ ] Feature engineering module
-- [ ] Baseline models (SARIMA, ETS)
-- [ ] LightGBM global model
+- [x] EDA notebook
+- [x] Feature engineering module
+- [x] Naive baseline         → MASE = 1.00 (by definition)
+- [x] SARIMA baseline        → MASE = 1.87 ❌ (beaten by naive on item level)
+- [ ] LightGBM global model  ← next
 - [ ] Temporal Fusion Transformer
-- [ ] Conformal prediction intervals
 - [ ] Evaluation dashboard
-- [ ] FastAPI serving layer
-- [ ] Streamlit app
 
 ---
