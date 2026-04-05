@@ -1,7 +1,5 @@
 """
-src/models/lgbm_model.py
-─────────────────────────
-LightGBM — Global Gradient Boosting Model for Demand Forecasting
+LightGBM 
 
 Strategy: Direct multi-step forecasting
   We predict all 28 horizon days at once using lag features
@@ -20,20 +18,20 @@ from loguru import logger
 from src.features.engineering import get_feature_columns
 
 
-# ── Hyperparameters ────────────────────────────────────────────────────────────
+#  Hyperparameters 
 PARAMS = {
-    "objective":         "regression_l1",   # MAE loss — robust to outliers
-    "num_leaves":        63,                # controls model complexity
-    "learning_rate":     0.05,              # small = more trees, better fit
-    "n_estimators":      500,               # number of boosting rounds
-    "subsample":         0.8,              # use 80% of rows per tree
-    "colsample_bytree":  0.8,              # use 80% of features per tree
-    "min_child_samples": 20,               # min samples per leaf
-    "reg_alpha":         0.1,              # L1 regularization
-    "reg_lambda":        0.1,              # L2 regularization
-    "random_state":      42,
-    "n_jobs":            -1,               # use all CPU cores
-    "verbose":           -1,               # suppress output
+    "learning_rate":     0.035747,
+    "num_leaves":        192,
+    "max_depth":         8,
+    "subsample":         0.799329,
+    "colsample_bytree":  0.578009,
+    "min_child_samples": 24,
+    "reg_alpha":         0.000195,
+    "reg_lambda":        2.142302,
+    "objective":         "regression_l1",
+    "n_estimators":      500,
+    "n_jobs":            -1,
+    "verbose":           -1,
 }
 
 QUANTILES = [0.1, 0.5, 0.9]
@@ -54,9 +52,8 @@ class LGBMDemandForecaster:
         self.quantiles        = quantiles or QUANTILES
         self._point_model     = None
         self._quantile_models = {}
-        self.feature_cols_    = []
-
-    # ── Training ───────────────────────────────────────────────────────────────
+        self.feature_cols_    = [] 
+    #  Training 
 
     def fit(
         self,
@@ -97,7 +94,7 @@ class LGBMDemandForecaster:
         if val_df is not None:
             callbacks.append(lgb.early_stopping(stopping_rounds=30, verbose=False))
 
-        # ── Point model ────────────────────────────────────────────────────────
+        #  Point model
         logger.info("  Training point model (L1 loss) …")
         point_params = {**self.params, "objective": "regression_l1"}
         point_params.pop("n_estimators", None)
@@ -110,9 +107,9 @@ class LGBMDemandForecaster:
             valid_names=valid_names,
             callbacks=callbacks,
         )
-        logger.success("  ✔ Point model done")
+        logger.success("  Point model done")
 
-        # ── Quantile models ────────────────────────────────────────────────────
+        # ── Quantile models 
         for q in self.quantiles:
             logger.info(f"  Training quantile model q={q} …")
             q_params = {**self.params, "objective": "quantile", "alpha": q}
@@ -127,10 +124,10 @@ class LGBMDemandForecaster:
                 callbacks=callbacks,
             )
 
-        logger.success("✔ All LightGBM models trained")
+        logger.success(" All LightGBM models trained")
         return self
 
-    # ── Prediction ─────────────────────────────────────────────────────────────
+    #  Prediction 
 
     def predict(self, df: pd.DataFrame) -> np.ndarray:
         self._check_fitted()
@@ -146,7 +143,7 @@ class LGBMDemandForecaster:
             for q, m in self._quantile_models.items()
         }
 
-    # ── Feature importance ─────────────────────────────────────────────────────
+    # Feature importance 
 
     def feature_importance(self, top_n: int = 20) -> pd.Series:
         self._check_fitted()
@@ -154,7 +151,7 @@ class LGBMDemandForecaster:
         series = pd.Series(importance, index=self._point_model.feature_name())
         return series.sort_values(ascending=False).head(top_n)
 
-    # ── Save / Load ────────────────────────────────────────────────────────────
+    # Save / Load 
 
     def save(self, path) -> None:
         path = Path(path)
@@ -170,7 +167,7 @@ class LGBMDemandForecaster:
         logger.info(f"Model loaded ← {path}")
         return model
 
-    # ── Helper ─────────────────────────────────────────────────────────────────
+    #  Helper
 
     def _check_fitted(self):
         if self._point_model is None:
@@ -181,7 +178,7 @@ class LGBMDemandForecaster:
         return f"LGBMDemandForecaster({status}, quantiles={self.quantiles})"
 
 
-# ── CLI ────────────────────────────────────────────────────────────────────────
+#  CLI 
 
 if __name__ == "__main__":
     from src.evaluation.metrics import evaluate
@@ -197,7 +194,7 @@ if __name__ == "__main__":
 
     # Step 2 — Load features for 3 stores only (one per state)
     # This gives ~13M rows — manageable on most machines
-    # Once you confirm it works, you can add more stores
+    
     logger.info("Loading features (3 stores) …")
     df_feat = load_features(stores=["CA_1", "TX_1", "WI_1"])
 
