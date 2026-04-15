@@ -3,9 +3,7 @@ Temporal Fusion Transformer (TFT)
 """
 
 from pathlib import Path
-from typing import Optional
 
-import numpy as np
 import pandas as pd
 from loguru import logger
 
@@ -162,8 +160,8 @@ def train_tft(
     output_dir  : where to save the trained model
     """
     try:
-        import pytorch_lightning as pl
-        from torch.utils.data import DataLoader
+        import pytorch_lightning as pl  # noqa: F401
+        from torch.utils.data import DataLoader  # noqa: F401
     except ImportError:
         raise ImportError(
             "pytorch-lightning not installed.\n"
@@ -180,6 +178,8 @@ def train_tft(
     # Prepare datasets
     logger.info("Preparing TFT datasets …")
     train_dataset = prepare_tft_dataset(train_df)
+
+    from pytorch_forecasting import TimeSeriesDataSet
     val_dataset   = TimeSeriesDataSet.from_dataset(
         train_dataset, val_df, predict=True, stop_randomization=True
     )

@@ -220,8 +220,6 @@ def run_sarima_benchmark(
 
 if __name__ == "__main__":
     from pathlib import Path
-    from src.evaluation.metrics import evaluate, make_leaderboard
-    from src.models.naive_baseline import run_naive_forecast
 
     DATA_DIR = Path("data/raw")
 

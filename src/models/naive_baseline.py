@@ -124,7 +124,7 @@ def run_naive_forecast(
 
 if __name__ == "__main__":
     from pathlib import Path
-    from src.evaluation.metrics import evaluate, mae
+    from src.evaluation.metrics import evaluate
 
     DATA_DIR = Path("data/raw")
 

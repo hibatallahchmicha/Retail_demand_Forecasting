@@ -1,6 +1,4 @@
 """
-src/models/optuna_tuning.py
-────────────────────────────
 Hyperparameter optimization for LightGBM using Optuna.
 
 What this does:
@@ -16,7 +14,6 @@ Run:
   python -m src.models.optuna_tuning
 """
 
-from pathlib import Path
 
 import lightgbm as lgb
 import numpy as np
@@ -24,16 +21,14 @@ import optuna
 import pandas as pd
 from loguru import logger
 
-from src.evaluation.metrics import mae, mase
+from src.evaluation.metrics import mase
 from src.features.engineering import get_feature_columns, load_features
 
 # Silence Optuna's own logs — we'll print what matters ourselves
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # Data — load once, reuse across all trials
-# ─────────────────────────────────────────────────────────────────────────────
 
 def load_data() -> tuple:
     """
@@ -56,9 +51,7 @@ def load_data() -> tuple:
     return train_df, val_df, test_df, feature_cols
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # Objective function — called once per trial
-# ─────────────────────────────────────────────────────────────────────────────
 
 def objective(
     trial: optuna.Trial,
@@ -85,7 +78,7 @@ def objective(
     float : validation MASE (lower = better)
     """
 
-    # ── Optuna suggests values within the ranges we define ────────────────────
+    #  Optuna suggests values within the ranges we define 
     params = {
         # How fast the model learns
         # Small = slower but more accurate, Large = faster but may overfit
@@ -117,7 +110,7 @@ def objective(
         "verbose":    -1,
     }
 
-    # ── Train LightGBM with these params ──────────────────────────────────────
+    #  Train LightGBM with these params 
     dtrain = lgb.Dataset(
         train_df[feature_cols],
         label=train_df["sales"].values,
@@ -146,7 +139,7 @@ def objective(
         callbacks=callbacks,
     )
 
-    # ── Score on validation set ───────────────────────────────────────────────
+    #  Score on validation set 
     val_preds   = np.clip(model.predict(val_df[feature_cols]), 0, None)
     val_actual  = val_df["sales"].values
     train_sales = train_df["sales"].values
@@ -156,9 +149,7 @@ def objective(
     return val_mase
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # Run the study
-# ─────────────────────────────────────────────────────────────────────────────
 
 def run_tuning(n_trials: int = 50) -> dict:
     """
@@ -197,15 +188,15 @@ def run_tuning(n_trials: int = 50) -> dict:
         show_progress_bar=True,
     )
 
-    # ── Results ───────────────────────────────────────────────────────────────
+    #  Results 
     best_params = study.best_params
     best_mase   = study.best_value
 
-    logger.success(f"✔ Tuning complete!")
+    logger.success("✔ Tuning complete!")
     logger.success(f"  Best val MASE : {best_mase:.4f}")
     logger.success(f"  Best params   : {best_params}")
 
-    # ── Trial history ─────────────────────────────────────────────────────────
+    # Trial history ─────────────────────────────────────────────────────────
     print("\n── Top 5 Trials ──")
     trials_df = study.trials_dataframe()
     trials_df = trials_df.sort_values("value").head(5)
@@ -227,7 +218,7 @@ def run_tuning(n_trials: int = 50) -> dict:
     return best_params
 
 
-# ── CLI ────────────────────────────────────────────────────────────────────────
+#CLI
 
 if __name__ == "__main__":
     import argparse
@@ -240,3 +231,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     best = run_tuning(n_trials=args.n_trials)
+
