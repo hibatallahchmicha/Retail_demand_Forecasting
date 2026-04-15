@@ -1,6 +1,11 @@
 # 📦 Retail Demand Forecasting — Probabilistic & Multi-Horizon
 
-[![CI](https://github.com/chm-hibatallah/Retail_demand_Forecasting/actions/workflows/ci.yml/badge.svg)](https://github.com/chm-hibatallah/Retail_demand_Forecasting/actions/workflows/ci.yml)
+[![CI](https://github.com/chm-hibatallah/Retail_demand_Forecasting/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/chm-hibatallah/Retail_demand_Forecasting/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![LightGBM](https://img.shields.io/badge/LightGBM-Best%20Model-green?logo=microsoft)](https://lightgbm.readthedocs.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 > A production-grade time series forecasting system for retail supply chain, built on the M5 Walmart dataset.  
 > Benchmarks 6+ models, produces probabilistic forecasts with uncertainty quantification, and exposes results via a live Streamlit dashboard.
