@@ -5,6 +5,32 @@
 > A production-grade time series forecasting system for retail supply chain, built on the M5 Walmart dataset.  
 > Benchmarks 6+ models, produces probabilistic forecasts with uncertainty quantification, and exposes results via a live Streamlit dashboard.
 
+## 📸 Dashboard Preview
+
+<p align="center">
+  <img src="assets/01_methodology.png" alt="Methodology Pipeline" width="100%">
+</p>
+
+<p align="center">
+  <img src="assets/02_kpi_overview.png" alt="KPI Overview" width="100%">
+</p>
+
+<p align="center">
+  <img src="assets/03_model_benchmark.png" alt="Model Benchmark" width="100%">
+</p>
+
+<p align="center">
+  <img src="assets/04_forecast_chart.png" alt="28-Day Forecast with Prediction Interval" width="100%">
+</p>
+
+<p align="center">
+  <img src="assets/05_feature_importance.png" alt="Feature Importance" width="100%">
+</p>
+
+<p align="center">
+  <img src="assets/06_business_insights.png" alt="Business Insights" width="100%">
+</p>
+
 ---
 
 ## 🎯 Project Goals
@@ -146,19 +172,43 @@ See [`results/benchmark.md`](results/benchmark.md) for detailed analysis.
 
 ---
 
-## 🗺️ Roadmap
+## 🧠 Skills & Lessons Learned
 
-- [x] Data preprocessing & ETL pipeline
-- [x] Feature engineering (lags, rolling, calendar, price, target encoding)
-- [x] Exploratory data analysis notebook
-- [x] Naive seasonal baseline
-- [x] SARIMA model
-- [x] LightGBM model with quantile regression
-- [x] XGBoost model with conformal prediction
-- [x] Optuna hyperparameter tuning
-- [x] Streamlit dashboard
-- [x] Model benchmark report
-- [ ] Temporal Fusion Transformer (GPU required)
-- [x] CI/CD pipeline (GitHub Actions — lint + test + coverage)
+### Technical Skills Practiced
 
+| Area | Skills |
+|------|--------|
+| **Data Engineering** | ETL pipelines, memory-efficient chunked processing, Parquet I/O, categorical dtypes |
+| **Feature Engineering** | Lag features, rolling statistics, cyclical encoding, target encoding, price momentum |
+| **Machine Learning** | LightGBM, XGBoost, SARIMA — global vs per-series modelling tradeoffs |
+| **Probabilistic Forecasting** | Quantile regression, conformal prediction intervals, calibration evaluation |
+| **Hyperparameter Tuning** | Bayesian optimisation with Optuna, search space design, early stopping |
+| **Evaluation** | MASE, WRMSSE (M5 official metric), coverage analysis, leaderboard construction |
+| **Visualisation & Dashboards** | Streamlit, Plotly, custom CSS, interactive filters, responsive layout |
+| **Software Engineering** | Modular project structure, `pytest` unit tests, CI/CD with GitHub Actions, linting with `ruff` |
+
+### Problem-Solving Approach
+
+This project taught me to think like a supply chain data scientist, not just a model builder:
+
+1. **Start with the business question.** A retailer doesn't care about RMSE — they care about *"how many units should I order?"* and *"how confident should I be?"*. That's why every model produces prediction intervals, not just point forecasts.
+
+2. **Baselines first.** Before building any ML model, I implemented a naive seasonal forecast (repeat last week). This gave a concrete target: if my model can't beat "just copy last Monday," it's useless. SARIMA (MASE = 1.87) failed this test — a valuable lesson that classical models struggle with item-level retail data driven by promotions and events.
+
+3. **Respect the data scale.** 59M rows don't fit in RAM. Instead of reaching for Spark, I designed the pipeline to process one store at a time, write to Parquet, and free memory immediately. Simple engineering > complex infrastructure.
+
+4. **Feature engineering > model complexity.** LightGBM with good features (rolling stats, price momentum, target encoding) matched XGBoost and trained 24× faster. The features matter more than the algorithm.
+
+5. **Quantify uncertainty honestly.** Our 89% coverage (target: 80%) means prediction intervals are slightly conservative — but a supply chain planner can trust them for safety stock decisions. Overconfident intervals are worse than wide ones.
+
+---
+
+## 📬 Contact
+
+**Hibat Allah Chmicha**
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/hibat-allah-chmicha-7b2314324/)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/chm-hibatallah)
+
+---
 
