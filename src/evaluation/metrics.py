@@ -7,6 +7,8 @@ the metrics i  used in this script are
     Coverage → are our prediction intervals honest?
 """
 
+from __future__ import annotations
+
 import numpy as np
 import pandas as pd
 from loguru import logger

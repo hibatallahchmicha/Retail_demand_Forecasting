@@ -27,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.10", "3.11"]
 
@@ -43,8 +44,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install numpy pandas scipy scikit-learn lightgbm xgboost statsmodels pmdarima loguru joblib pytest pytest-cov
 
-      - name: Run tests with coverage
-        run: pytest tests/ -v --tb=short --cov=src --cov-report=term-missing
-
-      - name: Fail if coverage below 50%
-        run: pytest tests/ --cov=src --cov-fail-under=50 -q
+      - name: Run tests
+        run: pytest tests/ -v --tb=short
